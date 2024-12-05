@@ -1,0 +1,496 @@
+;;
+;; Type: StateInit
+;; TLB: _ code:^cell data:^cell = StateInit
+;;
+
+((cell, cell)) $StateInit$_not_null(tuple v) inline {
+    throw_if(128, null?(v));
+    var (cell vvv'code, cell vvv'data) = __tact_tuple_destroy_2(v);
+    return (vvv'code, vvv'data);
+}
+
+;;
+;; Type: SendParameters
+;; TLB: _ bounce:bool to:address value:int257 mode:int257 body:Maybe ^cell code:Maybe ^cell data:Maybe ^cell = SendParameters
+;;
+
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body_code_data(int bounce, slice to, int value, int mode, cell body, cell code, cell data) inline {
+    return (bounce, to, value, mode, body, code, data);
+}
+
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_bounce_body(slice to, int value, int mode, int bounce, cell body) inline {
+    return (bounce, to, value, mode, body, null(), null());
+}
+
+;;
+;; Type: Deploy
+;; Header: 0x946a98b6
+;; TLB: deploy#946a98b6 queryId:uint64 = Deploy
+;;
+
+(slice, ((int))) $Deploy$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 2490013878);
+    var v'queryId = sc_0~load_uint(64);
+    return (sc_0, (v'queryId));
+}
+
+;;
+;; Type: DeployOk
+;; Header: 0xaff90f57
+;; TLB: deploy_ok#aff90f57 queryId:uint64 = DeployOk
+;;
+
+builder $DeployOk$_store(builder build_0, (int) v) inline {
+    var (v'queryId) = v;
+    build_0 = store_uint(build_0, 2952335191, 32);
+    build_0 = build_0.store_uint(v'queryId, 64);
+    return build_0;
+}
+
+cell $DeployOk$_store_cell((int) v) inline {
+    return $DeployOk$_store(begin_cell(), v).end_cell();
+}
+
+((int)) $DeployOk$_constructor_queryId(int queryId) inline {
+    return (queryId);
+}
+
+;;
+;; Type: ChangeOwner
+;; Header: 0x819dbe99
+;; TLB: change_owner#819dbe99 queryId:uint64 newOwner:address = ChangeOwner
+;;
+
+(slice, ((int, slice))) $ChangeOwner$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 2174598809);
+    var v'queryId = sc_0~load_uint(64);
+    var v'newOwner = sc_0~__tact_load_address();
+    return (sc_0, (v'queryId, v'newOwner));
+}
+
+;;
+;; Type: ChangeOwnerOk
+;; Header: 0x327b2b4a
+;; TLB: change_owner_ok#327b2b4a queryId:uint64 newOwner:address = ChangeOwnerOk
+;;
+
+builder $ChangeOwnerOk$_store(builder build_0, (int, slice) v) inline {
+    var (v'queryId, v'newOwner) = v;
+    build_0 = store_uint(build_0, 846932810, 32);
+    build_0 = build_0.store_uint(v'queryId, 64);
+    build_0 = __tact_store_address(build_0, v'newOwner);
+    return build_0;
+}
+
+cell $ChangeOwnerOk$_store_cell((int, slice) v) inline {
+    return $ChangeOwnerOk$_store(begin_cell(), v).end_cell();
+}
+
+((int, slice)) $ChangeOwnerOk$_constructor_queryId_newOwner(int queryId, slice newOwner) inline {
+    return (queryId, newOwner);
+}
+
+;;
+;; Type: RoundInfo
+;; TLB: _ orders:dict<uint32, ^BuyInfo{startLuckyNum:uint16,nifiNum:uint16}> sum:uint16 arrLength:uint16 sequence:uint16 finish:bool winner:uint16 awardAmount:coins startTime:uint32 endTime:uint32 = RoundInfo
+;;
+
+builder $RoundInfo$_store(builder build_0, (cell, int, int, int, int, int, int, int, int) v) inline_ref {
+    var (v'orders, v'sum, v'arrLength, v'sequence, v'finish, v'winner, v'awardAmount, v'startTime, v'endTime) = v;
+    build_0 = build_0.store_dict(v'orders);
+    build_0 = build_0.store_uint(v'sum, 16);
+    build_0 = build_0.store_uint(v'arrLength, 16);
+    build_0 = build_0.store_uint(v'sequence, 16);
+    build_0 = build_0.store_int(v'finish, 1);
+    build_0 = build_0.store_uint(v'winner, 16);
+    build_0 = build_0.store_coins(v'awardAmount);
+    build_0 = build_0.store_uint(v'startTime, 32);
+    build_0 = build_0.store_uint(v'endTime, 32);
+    return build_0;
+}
+
+cell $RoundInfo$_store_cell((cell, int, int, int, int, int, int, int, int) v) inline {
+    return $RoundInfo$_store(begin_cell(), v).end_cell();
+}
+
+(slice, ((cell, int, int, int, int, int, int, int, int))) $RoundInfo$_load(slice sc_0) inline_ref {
+    var v'orders = sc_0~load_dict();
+    var v'sum = sc_0~load_uint(16);
+    var v'arrLength = sc_0~load_uint(16);
+    var v'sequence = sc_0~load_uint(16);
+    var v'finish = sc_0~load_int(1);
+    var v'winner = sc_0~load_uint(16);
+    var v'awardAmount = sc_0~load_coins();
+    var v'startTime = sc_0~load_uint(32);
+    var v'endTime = sc_0~load_uint(32);
+    return (sc_0, (v'orders, v'sum, v'arrLength, v'sequence, v'finish, v'winner, v'awardAmount, v'startTime, v'endTime));
+}
+
+tuple $RoundInfo$_as_optional((cell, int, int, int, int, int, int, int, int) v) inline {
+    var (v'orders, v'sum, v'arrLength, v'sequence, v'finish, v'winner, v'awardAmount, v'startTime, v'endTime) = v;
+    return __tact_tuple_create_9(v'orders, v'sum, v'arrLength, v'sequence, v'finish, v'winner, v'awardAmount, v'startTime, v'endTime);
+}
+
+tuple $RoundInfo$_load_opt(cell cl) inline {
+    if (null?(cl)) {
+        return null();
+    }
+    var sc = cl.begin_parse();
+    return $RoundInfo$_as_optional(sc~$RoundInfo$_load());
+}
+
+((cell, int, int, int, int, int, int, int, int)) $RoundInfo$_not_null(tuple v) inline {
+    throw_if(128, null?(v));
+    var (cell vvv'orders, int vvv'sum, int vvv'arrLength, int vvv'sequence, int vvv'finish, int vvv'winner, int vvv'awardAmount, int vvv'startTime, int vvv'endTime) = __tact_tuple_destroy_9(v);
+    return (vvv'orders, vvv'sum, vvv'arrLength, vvv'sequence, vvv'finish, vvv'winner, vvv'awardAmount, vvv'startTime, vvv'endTime);
+}
+
+tuple $RoundInfo$_to_tuple(((cell, int, int, int, int, int, int, int, int)) v) inline {
+    var (v'orders, v'sum, v'arrLength, v'sequence, v'finish, v'winner, v'awardAmount, v'startTime, v'endTime) = v;
+    return __tact_tuple_create_9(v'orders, v'sum, v'arrLength, v'sequence, v'finish, v'winner, v'awardAmount, v'startTime, v'endTime);
+}
+
+tuple $RoundInfo$_to_opt_tuple(tuple v) inline {
+    if (null?(v)) { return null(); } 
+    return $RoundInfo$_to_tuple($RoundInfo$_not_null(v)); 
+}
+
+tuple $RoundInfo$_to_opt_external(tuple v) inline {
+    var loaded = $RoundInfo$_to_opt_tuple(v);
+    if (null?(loaded)) {
+        return null();
+    } else {
+        return (loaded);
+    }
+}
+
+((cell, int, int, int, int, int, int, int, int)) $RoundInfo$_constructor_orders_sum_arrLength_finish_sequence_winner_awardAmount_startTime_endTime(cell orders, int sum, int arrLength, int finish, int sequence, int winner, int awardAmount, int startTime, int endTime) inline {
+    return (orders, sum, arrLength, sequence, finish, winner, awardAmount, startTime, endTime);
+}
+
+;;
+;; Type: BuyInfo
+;; TLB: _ startLuckyNum:uint16 nifiNum:uint16 = BuyInfo
+;;
+
+builder $BuyInfo$_store(builder build_0, (int, int) v) inline {
+    var (v'startLuckyNum, v'nifiNum) = v;
+    build_0 = build_0.store_uint(v'startLuckyNum, 16);
+    build_0 = build_0.store_uint(v'nifiNum, 16);
+    return build_0;
+}
+
+cell $BuyInfo$_store_cell((int, int) v) inline {
+    return $BuyInfo$_store(begin_cell(), v).end_cell();
+}
+
+(slice, ((int, int))) $BuyInfo$_load(slice sc_0) inline {
+    var v'startLuckyNum = sc_0~load_uint(16);
+    var v'nifiNum = sc_0~load_uint(16);
+    return (sc_0, (v'startLuckyNum, v'nifiNum));
+}
+
+tuple $BuyInfo$_as_optional((int, int) v) inline {
+    var (v'startLuckyNum, v'nifiNum) = v;
+    return __tact_tuple_create_2(v'startLuckyNum, v'nifiNum);
+}
+
+tuple $BuyInfo$_load_opt(cell cl) inline {
+    if (null?(cl)) {
+        return null();
+    }
+    var sc = cl.begin_parse();
+    return $BuyInfo$_as_optional(sc~$BuyInfo$_load());
+}
+
+((int, int)) $BuyInfo$_not_null(tuple v) inline {
+    throw_if(128, null?(v));
+    var (int vvv'startLuckyNum, int vvv'nifiNum) = __tact_tuple_destroy_2(v);
+    return (vvv'startLuckyNum, vvv'nifiNum);
+}
+
+tuple $BuyInfo$_to_tuple(((int, int)) v) inline {
+    var (v'startLuckyNum, v'nifiNum) = v;
+    return __tact_tuple_create_2(v'startLuckyNum, v'nifiNum);
+}
+
+tuple $BuyInfo$_to_opt_tuple(tuple v) inline {
+    if (null?(v)) { return null(); } 
+    return $BuyInfo$_to_tuple($BuyInfo$_not_null(v)); 
+}
+
+tuple $BuyInfo$_to_opt_external(tuple v) inline {
+    var loaded = $BuyInfo$_to_opt_tuple(v);
+    if (null?(loaded)) {
+        return null();
+    } else {
+        return (loaded);
+    }
+}
+
+((int, int)) $BuyInfo$_constructor_startLuckyNum_nifiNum(int startLuckyNum, int nifiNum) inline {
+    return (startLuckyNum, nifiNum);
+}
+
+;;
+;; Type: WinnerInfo
+;; TLB: _ luckyNum:uint16 = WinnerInfo
+;;
+
+((int)) $WinnerInfo$_not_null(tuple v) inline {
+    throw_if(128, null?(v));
+    var (int vvv'luckyNum) = __tact_tuple_destroy_1(v);
+    return (vvv'luckyNum);
+}
+
+tuple $WinnerInfo$_as_optional((int) v) inline {
+    var (v'luckyNum) = v;
+    return __tact_tuple_create_1(v'luckyNum);
+}
+
+tuple $WinnerInfo$_to_tuple(((int)) v) inline {
+    var (v'luckyNum) = v;
+    return __tact_tuple_create_1(v'luckyNum);
+}
+
+tuple $WinnerInfo$_to_opt_tuple(tuple v) inline {
+    if (null?(v)) { return null(); } 
+    return $WinnerInfo$_to_tuple($WinnerInfo$_not_null(v)); 
+}
+
+tuple $WinnerInfo$_to_opt_external(tuple v) inline {
+    var loaded = $WinnerInfo$_to_opt_tuple(v);
+    if (null?(loaded)) {
+        return null();
+    } else {
+        return (loaded);
+    }
+}
+
+((int)) $WinnerInfo$_constructor_luckyNum(int luckyNum) inline {
+    return (luckyNum);
+}
+
+;;
+;; Type: SignData
+;; TLB: _ round:uint32 nifiAmount:uint16 orderNumber:uint32 address:address = SignData
+;;
+
+builder $SignData$_store(builder build_0, (int, int, int, slice) v) inline {
+    var (v'round, v'nifiAmount, v'orderNumber, v'address) = v;
+    build_0 = build_0.store_uint(v'round, 32);
+    build_0 = build_0.store_uint(v'nifiAmount, 16);
+    build_0 = build_0.store_uint(v'orderNumber, 32);
+    build_0 = __tact_store_address(build_0, v'address);
+    return build_0;
+}
+
+cell $SignData$_store_cell((int, int, int, slice) v) inline {
+    return $SignData$_store(begin_cell(), v).end_cell();
+}
+
+((int, int, int, slice)) $SignData$_constructor_round_nifiAmount_orderNumber_address(int round, int nifiAmount, int orderNumber, slice address) inline {
+    return (round, nifiAmount, orderNumber, address);
+}
+
+;;
+;; Type: NewRoundMsg
+;; Header: 0xe340781e
+;; TLB: new_round_msg#e340781e round:uint32 sum:uint16 startTime:uint32 endTime:uint32 awardAmount:coins = NewRoundMsg
+;;
+
+(slice, ((int, int, int, int, int))) $NewRoundMsg$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 3812653086);
+    var v'round = sc_0~load_uint(32);
+    var v'sum = sc_0~load_uint(16);
+    var v'startTime = sc_0~load_uint(32);
+    var v'endTime = sc_0~load_uint(32);
+    var v'awardAmount = sc_0~load_coins();
+    return (sc_0, (v'round, v'sum, v'startTime, v'endTime, v'awardAmount));
+}
+
+;;
+;; Type: CloseRoundMsg
+;; Header: 0x600fd230
+;; TLB: close_round_msg#600fd230 round:uint32 = CloseRoundMsg
+;;
+
+(slice, ((int))) $CloseRoundMsg$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 1611649584);
+    var v'round = sc_0~load_uint(32);
+    return (sc_0, (v'round));
+}
+
+;;
+;; Type: BuyMsg
+;; Header: 0x6e7208a0
+;; TLB: buy_msg#6e7208a0 round:uint32 nifiAmount:uint16 orderNumber:uint32 signature:^cell = BuyMsg
+;;
+
+(slice, ((int, int, int, cell))) $BuyMsg$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 1852967072);
+    var v'round = sc_0~load_uint(32);
+    var v'nifiAmount = sc_0~load_uint(16);
+    var v'orderNumber = sc_0~load_uint(32);
+    var v'signature = sc_0~load_ref();
+    return (sc_0, (v'round, v'nifiAmount, v'orderNumber, v'signature));
+}
+
+((int, int, int, cell)) $BuyMsg$_constructor_round_nifiAmount_orderNumber_signature(int round, int nifiAmount, int orderNumber, cell signature) inline {
+    return (round, nifiAmount, orderNumber, signature);
+}
+
+;;
+;; Type: BuyEvent
+;; Header: 0xa8fa17a6
+;; TLB: buy_event#a8fa17a6 round:uint32 amount:uint16 orderNumber:uint32 luckyNumberIndex:uint16 = BuyEvent
+;;
+
+builder $BuyEvent$_store(builder build_0, (int, int, int, int) v) inline {
+    var (v'round, v'amount, v'orderNumber, v'luckyNumberIndex) = v;
+    build_0 = store_uint(build_0, 2834962342, 32);
+    build_0 = build_0.store_uint(v'round, 32);
+    build_0 = build_0.store_uint(v'amount, 16);
+    build_0 = build_0.store_uint(v'orderNumber, 32);
+    build_0 = build_0.store_uint(v'luckyNumberIndex, 16);
+    return build_0;
+}
+
+cell $BuyEvent$_store_cell((int, int, int, int) v) inline {
+    return $BuyEvent$_store(begin_cell(), v).end_cell();
+}
+
+((int, int, int, int)) $BuyEvent$_constructor_round_amount_orderNumber_luckyNumberIndex(int round, int amount, int orderNumber, int luckyNumberIndex) inline {
+    return (round, amount, orderNumber, luckyNumberIndex);
+}
+
+;;
+;; Type: DrawMsg
+;; Header: 0x021c4b88
+;; TLB: draw_msg#021c4b88 round:uint32 = DrawMsg
+;;
+
+(slice, ((int))) $DrawMsg$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 35408776);
+    var v'round = sc_0~load_uint(32);
+    return (sc_0, (v'round));
+}
+
+;;
+;; Type: CleanMsg
+;; Header: 0xd9d7cdc8
+;; TLB: clean_msg#d9d7cdc8 round:uint32 = CleanMsg
+;;
+
+(slice, ((int))) $CleanMsg$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 3654798792);
+    var v'round = sc_0~load_uint(32);
+    return (sc_0, (v'round));
+}
+
+;;
+;; Type: PrizeMsg
+;; Header: 0xa64b9539
+;; TLB: prize_msg#a64b9539 round:uint32 txId:uint256 = PrizeMsg
+;;
+
+(slice, ((int, int))) $PrizeMsg$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 2789971257);
+    var v'round = sc_0~load_uint(32);
+    var v'txId = sc_0~load_uint(256);
+    return (sc_0, (v'round, v'txId));
+}
+
+;;
+;; Type: OrderInfo
+;; TLB: _ orderNumber:uint32 startLuckyNum:uint16 nifiNum:uint16 = OrderInfo
+;;
+
+(slice, ((int, int, int))) $OrderInfo$_load(slice sc_0) inline {
+    var v'orderNumber = sc_0~load_uint(32);
+    var v'startLuckyNum = sc_0~load_uint(16);
+    var v'nifiNum = sc_0~load_uint(16);
+    return (sc_0, (v'orderNumber, v'startLuckyNum, v'nifiNum));
+}
+
+;;
+;; Type: BatchSyncOrderMsg
+;; Header: 0xcf613994
+;; TLB: batch_sync_order_msg#cf613994 round:uint32 order1:OrderInfo{orderNumber:uint32,startLuckyNum:uint16,nifiNum:uint16} order2:OrderInfo{orderNumber:uint32,startLuckyNum:uint16,nifiNum:uint16} order3:OrderInfo{orderNumber:uint32,startLuckyNum:uint16,nifiNum:uint16} order4:OrderInfo{orderNumber:uint32,startLuckyNum:uint16,nifiNum:uint16} order5:OrderInfo{orderNumber:uint32,startLuckyNum:uint16,nifiNum:uint16} order6:OrderInfo{orderNumber:uint32,startLuckyNum:uint16,nifiNum:uint16} order7:OrderInfo{orderNumber:uint32,startLuckyNum:uint16,nifiNum:uint16} order8:OrderInfo{orderNumber:uint32,startLuckyNum:uint16,nifiNum:uint16} order9:OrderInfo{orderNumber:uint32,startLuckyNum:uint16,nifiNum:uint16} order10:OrderInfo{orderNumber:uint32,startLuckyNum:uint16,nifiNum:uint16} order11:OrderInfo{orderNumber:uint32,startLuckyNum:uint16,nifiNum:uint16} order12:OrderInfo{orderNumber:uint32,startLuckyNum:uint16,nifiNum:uint16} order13:OrderInfo{orderNumber:uint32,startLuckyNum:uint16,nifiNum:uint16} order14:OrderInfo{orderNumber:uint32,startLuckyNum:uint16,nifiNum:uint16} = BatchSyncOrderMsg
+;;
+
+(slice, ((int, (int, int, int), (int, int, int), (int, int, int), (int, int, int), (int, int, int), (int, int, int), (int, int, int), (int, int, int), (int, int, int), (int, int, int), (int, int, int), (int, int, int), (int, int, int), (int, int, int)))) $BatchSyncOrderMsg$_load(slice sc_0) inline_ref {
+    throw_unless(129, sc_0~load_uint(32) == 3479255444);
+    var v'round = sc_0~load_uint(32);
+    var v'order1 = sc_0~$OrderInfo$_load();
+    var v'order2 = sc_0~$OrderInfo$_load();
+    var v'order3 = sc_0~$OrderInfo$_load();
+    var v'order4 = sc_0~$OrderInfo$_load();
+    var v'order5 = sc_0~$OrderInfo$_load();
+    var v'order6 = sc_0~$OrderInfo$_load();
+    var v'order7 = sc_0~$OrderInfo$_load();
+    var v'order8 = sc_0~$OrderInfo$_load();
+    var v'order9 = sc_0~$OrderInfo$_load();
+    var v'order10 = sc_0~$OrderInfo$_load();
+    var v'order11 = sc_0~$OrderInfo$_load();
+    var v'order12 = sc_0~$OrderInfo$_load();
+    var v'order13 = sc_0~$OrderInfo$_load();
+    var v'order14 = sc_0~$OrderInfo$_load();
+    return (sc_0, (v'round, v'order1, v'order2, v'order3, v'order4, v'order5, v'order6, v'order7, v'order8, v'order9, v'order10, v'order11, v'order12, v'order13, v'order14));
+}
+
+;;
+;; Type: SnatchTresasureContract
+;;
+
+builder $SnatchTresasureContract$_store(builder build_0, (cell, slice, int, cell, cell) v) inline {
+    var (v'rounds, v'owner, v'publicKey, v'records, v'winners) = v;
+    build_0 = build_0.store_dict(v'rounds);
+    build_0 = __tact_store_address(build_0, v'owner);
+    build_0 = build_0.store_uint(v'publicKey, 256);
+    build_0 = build_0.store_dict(v'records);
+    var build_1 = begin_cell();
+    build_1 = build_1.store_dict(v'winners);
+    build_0 = store_ref(build_0, build_1.end_cell());
+    return build_0;
+}
+
+(slice, ((cell, slice, int, cell, cell))) $SnatchTresasureContract$_load(slice sc_0) inline {
+    var v'rounds = sc_0~load_dict();
+    var v'owner = sc_0~__tact_load_address();
+    var v'publicKey = sc_0~load_uint(256);
+    var v'records = sc_0~load_dict();
+    slice sc_1 = sc_0~load_ref().begin_parse();
+    var v'winners = sc_1~load_dict();
+    return (sc_0, (v'rounds, v'owner, v'publicKey, v'records, v'winners));
+}
+
+(slice, ((slice, slice, slice))) $SnatchTresasureContract$init$_load(slice sc_0) inline {
+    var v'owner = sc_0~__tact_load_address();
+    var v'pub = sc_0~load_ref().begin_parse();
+    var v'msg = sc_0~load_ref().begin_parse();
+    return (sc_0, (v'owner, v'pub, v'msg));
+}
+
+(cell, slice, int, cell, cell) $SnatchTresasureContract$_contract_load() impure inline_ref {
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~$SnatchTresasureContract$_load();
+    } else {
+        ;; Allow only workchain deployments
+        throw_unless(137, my_address().preload_uint(11) == 1024);
+        (slice owner, slice pub, slice msg) = $sc~$SnatchTresasureContract$init$_load();
+        $sc.end_parse();
+        return $SnatchTresasureContract$_contract_init(owner, pub, msg);
+    }
+}
+
+() $SnatchTresasureContract$_contract_store((cell, slice, int, cell, cell) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
+    b = $SnatchTresasureContract$_store(b, v);
+    set_data(b.end_cell());
+}

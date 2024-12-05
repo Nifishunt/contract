@@ -1,0 +1,26 @@
+;; String "new round:"
+slice __gen_slice_string_494c3ab990bde87ec787d2bd8d803507720187963375babc0140ef6aaa7a4f0c() asm "B{b5ee9c7241010101000c0000146e657720726f756e643aafbdb25e} B>boc <s PUSHSLICE";
+
+;; String "close round:"
+slice __gen_slice_string_0529f1f2fb6d8b034cbf3b31bf12f2ee6a45cd215e7c337638f5a5fc9ce5a32b() asm "B{b5ee9c7241010101000e000018636c6f736520726f756e643a57d51968} B>boc <s PUSHSLICE";
+
+;; String "good luck order:"
+slice __gen_slice_string_86dfd4a045cf387d3979e2fc6684a2423bf1597f7b26178af66a3277aeb60f01() asm "B{b5ee9c72410101010012000020676f6f64206c75636b206f726465723aad765e23} B>boc <s PUSHSLICE";
+
+;; String ",lucky number:"
+slice __gen_slice_string_d7f9ee25ca28e5bc659d68b32131031218e4181a56dd946c9d37c0a48c62823c() asm "B{b5ee9c7241010101001000001c2c6c75636b79206e756d6265723a42be9bb1} B>boc <s PUSHSLICE";
+
+;; String "draw round:"
+slice __gen_slice_string_1c70c1109eb3bd9106b9c0cd5d5a8df0dedde579dacd531ec854bbdd7dab9ba9() asm "B{b5ee9c7241010101000d0000166472617720726f756e643a8f42e56c} B>boc <s PUSHSLICE";
+
+;; String "award round:"
+slice __gen_slice_string_baab54cde04eed665e5be625b89067acab1f338ae347ec34dc417cdb93669987() asm "B{b5ee9c7241010101000e000018617761726420726f756e643a7d7fdf0c} B>boc <s PUSHSLICE";
+
+;; String "clean round:"
+slice __gen_slice_string_7649f0637d4aec3ba48b44830b1b5b26595f97077a6d04607c6414d6f9e7dcd5() asm "B{b5ee9c7241010101000e000018636c65616e20726f756e643aef7566bc} B>boc <s PUSHSLICE";
+
+;; String " to "
+slice __gen_slice_string_29acbf4707ebe2eeff93b2d621ce3fef1ff430425718a0464bc4963c2869b639() asm "B{b5ee9c7241010101000600000820746f2010178f57} B>boc <s PUSHSLICE";
+
+;; String "batch sync orders: from "
+slice __gen_slice_string_e573187bc1b1a00502af27269b4a4bcfea16a5941cd12b00f8bae4140e511a1d() asm "B{b5ee9c7241010101001a00003062617463682073796e63206f72646572733a2066726f6d20d43bb1bc} B>boc <s PUSHSLICE";

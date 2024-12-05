@@ -1,0 +1,539 @@
+#pragma version =0.4.4;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
+#include "snatchtresasure_SnatchTresasureContract.headers.fc";
+#include "snatchtresasure_SnatchTresasureContract.stdlib.fc";
+#include "snatchtresasure_SnatchTresasureContract.constants.fc";
+#include "snatchtresasure_SnatchTresasureContract.storage.fc";
+
+;;
+;; Contract SnatchTresasureContract functions
+;;
+
+(cell, slice, int, cell, cell) $SnatchTresasureContract$_contract_init(slice $owner, slice $pub, slice $msg) impure inline_ref {
+    var (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)) = (null(), null(), null(), null(), null());
+    $self'owner = $owner;
+    $self'rounds = null();
+    $self'records = null();
+    $self'winners = null();
+    $self'publicKey = $pub~load_uint(256);
+    return ($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners);
+}
+
+((cell, slice, int, cell, cell), cell) $SnatchTresasureContract$_fun_getSignData((cell, slice, int, cell, cell) $self, (int, int, int, cell) $msg, slice $addr) impure inline_ref {
+    var (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)) = $self;
+    var (($msg'round, $msg'nifiAmount, $msg'orderNumber, $msg'signature)) = $msg;
+    var ($data'round, $data'nifiAmount, $data'orderNumber, $data'address) = $SignData$_constructor_round_nifiAmount_orderNumber_address($msg'round, $msg'nifiAmount, $msg'orderNumber, $addr);
+    return (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners), $SignData$_store_cell(($data'round, $data'nifiAmount, $data'orderNumber, $data'address)));
+}
+
+((cell, slice, int, cell, cell), tuple) $SnatchTresasureContract$_fun_getRoundWinner((cell, slice, int, cell, cell) $self, int $round) impure inline_ref {
+    var (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)) = $self;
+    int $winnerNum = __tact_dict_get_uint_uint($self'winners, 32, $round, 16);
+    if (null?($winnerNum)) {
+        return (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners), null());
+    }
+    int $r = __tact_not_null($winnerNum);
+    var ($roundInfo'orders, $roundInfo'sum, $roundInfo'arrLength, $roundInfo'sequence, $roundInfo'finish, $roundInfo'winner, $roundInfo'awardAmount, $roundInfo'startTime, $roundInfo'endTime) = $RoundInfo$_not_null($RoundInfo$_load_opt(__tact_dict_get_uint_cell($self'rounds, 32, $round)));
+    var ($fresh$underscore_1, $value, $fresh$flag_0) = __tact_dict_min_uint_cell($roundInfo'orders, 32);
+    while ($fresh$flag_0) {
+        var ($value'startLuckyNum, $value'nifiNum) = $BuyInfo$_not_null($BuyInfo$_load_opt($value));
+        if (( (($value'startLuckyNum <= $r)) ? (($r < ($value'startLuckyNum + $value'nifiNum))) : (false) )) {
+            return (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners), $WinnerInfo$_as_optional($WinnerInfo$_constructor_luckyNum($r)));
+        }
+        ($fresh$underscore_1, $value, $fresh$flag_0) = __tact_dict_next_uint_cell($roundInfo'orders, 32, $fresh$underscore_1);
+    }
+    return (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners), null());
+}
+
+((cell, slice, int, cell, cell), cell) $SnatchTresasureContract$_fun_getWinnerRecord((cell, slice, int, cell, cell) $self) impure inline_ref {
+    var (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)) = $self;
+    return (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners), $self'winners);
+}
+
+((cell, slice, int, cell, cell), tuple) $SnatchTresasureContract$_fun_getRoundInfoState((cell, slice, int, cell, cell) $self, int $key) impure inline_ref {
+    var (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)) = $self;
+    return (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners), $RoundInfo$_load_opt(__tact_dict_get_uint_cell($self'rounds, 32, $key)));
+}
+
+((cell, slice, int, cell, cell), int) $SnatchTresasureContract$_fun_getPrizeTxId((cell, slice, int, cell, cell) $self, int $round) impure inline_ref {
+    var (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)) = $self;
+    return (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners), __tact_dict_get_uint_uint($self'records, 32, $round, 256));
+}
+
+((cell, slice, int, cell, cell), cell) $SnatchTresasureContract$_fun_getPrizeRecord((cell, slice, int, cell, cell) $self) impure inline_ref {
+    var (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)) = $self;
+    return (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners), $self'records);
+}
+
+((cell, slice, int, cell, cell), int) $SnatchTresasureContract$_fun_getOrderExist((cell, slice, int, cell, cell) $self, int $round, int $order) impure inline_ref {
+    var (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)) = $self;
+    var ($info'orders, $info'sum, $info'arrLength, $info'sequence, $info'finish, $info'winner, $info'awardAmount, $info'startTime, $info'endTime) = $RoundInfo$_not_null($RoundInfo$_load_opt(__tact_dict_get_uint_cell($self'rounds, 32, $round)));
+    return (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners), null?($BuyInfo$_load_opt(__tact_dict_get_uint_cell($info'orders, 32, $order))));
+}
+
+((cell, slice, int, cell, cell), tuple) $SnatchTresasureContract$_fun_getBuyInfo((cell, slice, int, cell, cell) $self, int $round, int $orderNumber) impure inline_ref {
+    var (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)) = $self;
+    var ($info'orders, $info'sum, $info'arrLength, $info'sequence, $info'finish, $info'winner, $info'awardAmount, $info'startTime, $info'endTime) = $RoundInfo$_not_null($RoundInfo$_load_opt(__tact_dict_get_uint_cell($self'rounds, 32, $round)));
+    return (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners), $BuyInfo$_load_opt(__tact_dict_get_uint_cell($info'orders, 32, $orderNumber)));
+}
+
+((cell, slice, int, cell, cell), int) $SnatchTresasureContract$_fun_verifySignature((cell, slice, int, cell, cell) $self, int $round, int $nifiAmount, int $orderNumber, cell $signature, slice $addr) impure inline_ref {
+    var (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)) = $self;
+    var ($msg'round, $msg'nifiAmount, $msg'orderNumber, $msg'signature) = $BuyMsg$_constructor_round_nifiAmount_orderNumber_signature($round, $nifiAmount, $orderNumber, $signature);
+    cell $data = ($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)~$SnatchTresasureContract$_fun_getSignData(($msg'round, $msg'nifiAmount, $msg'orderNumber, $msg'signature), $addr);
+    int $hash = cell_hash($data);
+    int $check = check_signature($hash, $Cell$_fun_asSlice($msg'signature), $self'publicKey);
+    return (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners), $check);
+}
+
+((cell, slice, int, cell, cell), int) $SnatchTresasureContract$_fun_getPubkey((cell, slice, int, cell, cell) $self) impure inline_ref {
+    var (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)) = $self;
+    return (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners), $self'publicKey);
+}
+
+((cell, slice, int, cell, cell), ()) $SnatchTresasureContract$_fun_requireOwner((cell, slice, int, cell, cell) $self) impure inline_ref {
+    var (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)) = $self;
+    throw_unless(132, ( __tact_slice_eq_bits($self'owner, __tact_context_get_sender()) ));
+    return (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners), ());
+}
+
+((cell, slice, int, cell, cell), slice) $SnatchTresasureContract$_fun_owner((cell, slice, int, cell, cell) $self) impure inline_ref {
+    var (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)) = $self;
+    return (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners), $self'owner);
+}
+
+;;
+;; Receivers of a Contract SnatchTresasureContract
+;;
+
+(((cell, slice, int, cell, cell)), ()) $SnatchTresasureContract$_internal_binary_NewRoundMsg((cell, slice, int, cell, cell) $self, (int, int, int, int, int) $msg) impure inline {
+    var ($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners) = $self;
+    var ($msg'round, $msg'sum, $msg'startTime, $msg'endTime, $msg'awardAmount) = $msg;
+    ($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)~$SnatchTresasureContract$_fun_requireOwner();
+    throw_unless(60050, null?($RoundInfo$_load_opt(__tact_dict_get_uint_cell($self'rounds, 32, $msg'round))));
+    throw_unless(60050, null?(__tact_dict_get_uint_uint($self'winners, 32, $msg'round, 16)));
+    $self'rounds~__tact_dict_set_uint_cell(32, $msg'round, $RoundInfo$_store_cell($RoundInfo$_constructor_orders_sum_arrLength_finish_sequence_winner_awardAmount_startTime_endTime(null(), $msg'sum, 0, false, 0, 0, $msg'awardAmount, $msg'startTime, $msg'endTime)));
+    tuple $str = __tact_string_builder_append_not_mut(__tact_string_builder_append_not_mut(__tact_string_builder_start_comment(), __gen_slice_string_494c3ab990bde87ec787d2bd8d803507720187963375babc0140ef6aaa7a4f0c()), __tact_int_to_string($msg'round));
+    ($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)~$SnatchTresasureContract$_fun_reply(__tact_string_builder_end($str));
+    return (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners), ());
+}
+
+(((cell, slice, int, cell, cell)), ()) $SnatchTresasureContract$_internal_binary_CloseRoundMsg((cell, slice, int, cell, cell) $self, (int) $msg) impure inline {
+    var ($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners) = $self;
+    var ($msg'round) = $msg;
+    ($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)~$SnatchTresasureContract$_fun_requireOwner();
+    var ($round'orders, $round'sum, $round'arrLength, $round'sequence, $round'finish, $round'winner, $round'awardAmount, $round'startTime, $round'endTime) = $RoundInfo$_not_null($RoundInfo$_load_opt(__tact_dict_get_uint_cell($self'rounds, 32, $msg'round)));
+    throw_unless(48921, ($round'sum != $round'arrLength));
+    $round'finish = true;
+    $self'rounds~__tact_dict_set_uint_cell(32, $msg'round, $RoundInfo$_store_cell(($round'orders, $round'sum, $round'arrLength, $round'sequence, $round'finish, $round'winner, $round'awardAmount, $round'startTime, $round'endTime)));
+    tuple $str = __tact_string_builder_append_not_mut(__tact_string_builder_append_not_mut(__tact_string_builder_start_comment(), __gen_slice_string_0529f1f2fb6d8b034cbf3b31bf12f2ee6a45cd215e7c337638f5a5fc9ce5a32b()), __tact_int_to_string($msg'round));
+    ($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)~$SnatchTresasureContract$_fun_reply(__tact_string_builder_end($str));
+    return (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners), ());
+}
+
+(((cell, slice, int, cell, cell)), ()) $SnatchTresasureContract$_internal_binary_BuyMsg((cell, slice, int, cell, cell) $self, (int, int, int, cell) $msg) impure inline {
+    var ($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners) = $self;
+    var ($msg'round, $msg'nifiAmount, $msg'orderNumber, $msg'signature) = $msg;
+    var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
+    var ($round'orders, $round'sum, $round'arrLength, $round'sequence, $round'finish, $round'winner, $round'awardAmount, $round'startTime, $round'endTime) = $RoundInfo$_not_null($RoundInfo$_load_opt(__tact_dict_get_uint_cell($self'rounds, 32, $msg'round)));
+    throw_unless(61485, (~ $round'finish));
+    throw_unless(21468, ($round'endTime > now()));
+    tuple $exist = $BuyInfo$_load_opt(__tact_dict_get_uint_cell($round'orders, 32, $msg'orderNumber));
+    if ((~ null?($exist))) {
+        throw_unless(9583, ($round'endTime < now()));
+        throw_unless(21474, false);
+    }
+    cell $data = ($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)~$SnatchTresasureContract$_fun_getSignData(($msg'round, $msg'nifiAmount, $msg'orderNumber, $msg'signature), $ctx'sender);
+    int $hash = cell_hash($data);
+    int $check = check_signature($hash, $Cell$_fun_asSlice($msg'signature), $self'publicKey);
+    throw_unless(54750, $check);
+    throw_unless(57177, ($round'sum >= ($round'arrLength + $msg'nifiAmount)));
+    $round'sequence = ($round'sequence + 1);
+    int $ind = ($round'arrLength + 1);
+    $round'orders~__tact_dict_set_uint_cell(32, $msg'orderNumber, $BuyInfo$_store_cell($BuyInfo$_constructor_startLuckyNum_nifiNum($ind, $msg'nifiAmount)));
+    $round'arrLength = ($round'arrLength + $msg'nifiAmount);
+    if (($round'sum == $round'arrLength)) {
+        $round'finish = true;
+    }
+    $self'rounds~__tact_dict_set_uint_cell(32, $msg'round, $RoundInfo$_store_cell(($round'orders, $round'sum, $round'arrLength, $round'sequence, $round'finish, $round'winner, $round'awardAmount, $round'startTime, $round'endTime)));
+    var ($eventLog'round, $eventLog'amount, $eventLog'orderNumber, $eventLog'luckyNumberIndex) = $BuyEvent$_constructor_round_amount_orderNumber_luckyNumberIndex($msg'round, $msg'nifiAmount, $msg'orderNumber, $ind);
+    $global_send($SendParameters$_constructor_to_value_mode_bounce_body($self'owner, 0, 3, false, $BuyEvent$_store_cell(($eventLog'round, $eventLog'amount, $eventLog'orderNumber, $eventLog'luckyNumberIndex))));
+    tuple $str = __tact_string_builder_append_not_mut(__tact_string_builder_append_not_mut(__tact_string_builder_start_comment(), __gen_slice_string_86dfd4a045cf387d3979e2fc6684a2423bf1597f7b26178af66a3277aeb60f01()), __tact_int_to_string($msg'orderNumber));
+    ($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)~$SnatchTresasureContract$_fun_reply(__tact_string_builder_end($str));
+    return (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners), ());
+}
+
+(((cell, slice, int, cell, cell)), ()) $SnatchTresasureContract$_internal_binary_DrawMsg((cell, slice, int, cell, cell) $self, (int) $msg) impure inline {
+    var ($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners) = $self;
+    var ($msg'round) = $msg;
+    ($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)~$SnatchTresasureContract$_fun_requireOwner();
+    throw_unless(15307, null?(__tact_dict_get_uint_uint($self'winners, 32, $msg'round, 16)));
+    var ($round'orders, $round'sum, $round'arrLength, $round'sequence, $round'finish, $round'winner, $round'awardAmount, $round'startTime, $round'endTime) = $RoundInfo$_not_null($RoundInfo$_load_opt(__tact_dict_get_uint_cell($self'rounds, 32, $msg'round)));
+    throw_unless(26794, $round'finish);
+    int $r = $global_random(1, ($round'sum + 1));
+    $round'winner = $r;
+    $self'rounds~__tact_dict_set_uint_cell(32, $msg'round, $RoundInfo$_store_cell(($round'orders, $round'sum, $round'arrLength, $round'sequence, $round'finish, $round'winner, $round'awardAmount, $round'startTime, $round'endTime)));
+    $self'winners~__tact_dict_set_uint_uint(32, $msg'round, $r, 16);
+    tuple $str = __tact_string_builder_append_not_mut(__tact_string_builder_append_not_mut(__tact_string_builder_append_not_mut(__tact_string_builder_append_not_mut(__tact_string_builder_start_comment(), __gen_slice_string_1c70c1109eb3bd9106b9c0cd5d5a8df0dedde579dacd531ec854bbdd7dab9ba9()), __tact_int_to_string($msg'round)), __gen_slice_string_d7f9ee25ca28e5bc659d68b32131031218e4181a56dd946c9d37c0a48c62823c()), __tact_int_to_string($r));
+    ($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)~$SnatchTresasureContract$_fun_reply(__tact_string_builder_end($str));
+    return (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners), ());
+}
+
+(((cell, slice, int, cell, cell)), ()) $SnatchTresasureContract$_internal_binary_PrizeMsg((cell, slice, int, cell, cell) $self, (int, int) $msg) impure inline {
+    var ($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners) = $self;
+    var ($msg'round, $msg'txId) = $msg;
+    ($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)~$SnatchTresasureContract$_fun_requireOwner();
+    $self'records~__tact_dict_set_uint_uint(32, $msg'round, $msg'txId, 256);
+    tuple $str = __tact_string_builder_append_not_mut(__tact_string_builder_append_not_mut(__tact_string_builder_start_comment(), __gen_slice_string_baab54cde04eed665e5be625b89067acab1f338ae347ec34dc417cdb93669987()), __tact_int_to_string($msg'round));
+    ($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)~$SnatchTresasureContract$_fun_reply(__tact_string_builder_end($str));
+    return (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners), ());
+}
+
+(((cell, slice, int, cell, cell)), ()) $SnatchTresasureContract$_internal_binary_CleanMsg((cell, slice, int, cell, cell) $self, (int) $msg) impure inline {
+    var ($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners) = $self;
+    var ($msg'round) = $msg;
+    ($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)~$SnatchTresasureContract$_fun_requireOwner();
+    int $deletionSuccess = $self'rounds~__tact_dict_delete_uint(32, $msg'round);
+    tuple $str = __tact_string_builder_append_not_mut(__tact_string_builder_append_not_mut(__tact_string_builder_start_comment(), __gen_slice_string_7649f0637d4aec3ba48b44830b1b5b26595f97077a6d04607c6414d6f9e7dcd5()), __tact_int_to_string($msg'round));
+    ($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)~$SnatchTresasureContract$_fun_reply(__tact_string_builder_end($str));
+    return (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners), ());
+}
+
+(((cell, slice, int, cell, cell)), ()) $SnatchTresasureContract$_internal_binary_BatchSyncOrderMsg((cell, slice, int, cell, cell) $self, (int, (int, int, int), (int, int, int), (int, int, int), (int, int, int), (int, int, int), (int, int, int), (int, int, int), (int, int, int), (int, int, int), (int, int, int), (int, int, int), (int, int, int), (int, int, int), (int, int, int)) $msg) impure inline {
+    var ($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners) = $self;
+    var ($msg'round, ($msg'order1'orderNumber, $msg'order1'startLuckyNum, $msg'order1'nifiNum), ($msg'order2'orderNumber, $msg'order2'startLuckyNum, $msg'order2'nifiNum), ($msg'order3'orderNumber, $msg'order3'startLuckyNum, $msg'order3'nifiNum), ($msg'order4'orderNumber, $msg'order4'startLuckyNum, $msg'order4'nifiNum), ($msg'order5'orderNumber, $msg'order5'startLuckyNum, $msg'order5'nifiNum), ($msg'order6'orderNumber, $msg'order6'startLuckyNum, $msg'order6'nifiNum), ($msg'order7'orderNumber, $msg'order7'startLuckyNum, $msg'order7'nifiNum), ($msg'order8'orderNumber, $msg'order8'startLuckyNum, $msg'order8'nifiNum), ($msg'order9'orderNumber, $msg'order9'startLuckyNum, $msg'order9'nifiNum), ($msg'order10'orderNumber, $msg'order10'startLuckyNum, $msg'order10'nifiNum), ($msg'order11'orderNumber, $msg'order11'startLuckyNum, $msg'order11'nifiNum), ($msg'order12'orderNumber, $msg'order12'startLuckyNum, $msg'order12'nifiNum), ($msg'order13'orderNumber, $msg'order13'startLuckyNum, $msg'order13'nifiNum), ($msg'order14'orderNumber, $msg'order14'startLuckyNum, $msg'order14'nifiNum)) = $msg;
+    ($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)~$SnatchTresasureContract$_fun_requireOwner();
+    var ($roundInfo'orders, $roundInfo'sum, $roundInfo'arrLength, $roundInfo'sequence, $roundInfo'finish, $roundInfo'winner, $roundInfo'awardAmount, $roundInfo'startTime, $roundInfo'endTime) = $RoundInfo$_not_null($RoundInfo$_load_opt(__tact_dict_get_uint_cell($self'rounds, 32, $msg'round)));
+    throw_unless(61485, (~ $roundInfo'finish));
+    int $totalNifiNum = 0;
+    int $fromOrderNumber = 0;
+    int $toOrderNumber = 0;
+    if (($msg'order1'nifiNum > 0)) {
+        throw_unless(24491, null?($BuyInfo$_load_opt(__tact_dict_get_uint_cell($roundInfo'orders, 32, $msg'order1'orderNumber))));
+        $roundInfo'orders~__tact_dict_set_uint_cell(32, $msg'order1'orderNumber, $BuyInfo$_store_cell($BuyInfo$_constructor_startLuckyNum_nifiNum($msg'order1'startLuckyNum, $msg'order1'nifiNum)));
+        $totalNifiNum = $totalNifiNum + $msg'order1'nifiNum;
+        $roundInfo'sequence = $roundInfo'sequence + 1;
+        $fromOrderNumber = $msg'order1'orderNumber;
+        $toOrderNumber = $msg'order1'orderNumber;
+    }
+    if (($msg'order2'nifiNum > 0)) {
+        throw_unless(24491, null?($BuyInfo$_load_opt(__tact_dict_get_uint_cell($roundInfo'orders, 32, $msg'order2'orderNumber))));
+        $roundInfo'orders~__tact_dict_set_uint_cell(32, $msg'order2'orderNumber, $BuyInfo$_store_cell($BuyInfo$_constructor_startLuckyNum_nifiNum($msg'order2'startLuckyNum, $msg'order2'nifiNum)));
+        $totalNifiNum = $totalNifiNum + $msg'order2'nifiNum;
+        $roundInfo'sequence = $roundInfo'sequence + 1;
+        $toOrderNumber = $msg'order2'orderNumber;
+    }
+    if (($msg'order3'nifiNum > 0)) {
+        throw_unless(24491, null?($BuyInfo$_load_opt(__tact_dict_get_uint_cell($roundInfo'orders, 32, $msg'order3'orderNumber))));
+        $roundInfo'orders~__tact_dict_set_uint_cell(32, $msg'order3'orderNumber, $BuyInfo$_store_cell($BuyInfo$_constructor_startLuckyNum_nifiNum($msg'order3'startLuckyNum, $msg'order3'nifiNum)));
+        $totalNifiNum = $totalNifiNum + $msg'order3'nifiNum;
+        $roundInfo'sequence = $roundInfo'sequence + 1;
+        $toOrderNumber = $msg'order3'orderNumber;
+    }
+    if (($msg'order4'nifiNum > 0)) {
+        throw_unless(24491, null?($BuyInfo$_load_opt(__tact_dict_get_uint_cell($roundInfo'orders, 32, $msg'order4'orderNumber))));
+        $roundInfo'orders~__tact_dict_set_uint_cell(32, $msg'order4'orderNumber, $BuyInfo$_store_cell($BuyInfo$_constructor_startLuckyNum_nifiNum($msg'order4'startLuckyNum, $msg'order4'nifiNum)));
+        $totalNifiNum = $totalNifiNum + $msg'order4'nifiNum;
+        $roundInfo'sequence = $roundInfo'sequence + 1;
+        $toOrderNumber = $msg'order4'orderNumber;
+    }
+    if (($msg'order5'nifiNum > 0)) {
+        throw_unless(24491, null?($BuyInfo$_load_opt(__tact_dict_get_uint_cell($roundInfo'orders, 32, $msg'order5'orderNumber))));
+        $roundInfo'orders~__tact_dict_set_uint_cell(32, $msg'order5'orderNumber, $BuyInfo$_store_cell($BuyInfo$_constructor_startLuckyNum_nifiNum($msg'order5'startLuckyNum, $msg'order5'nifiNum)));
+        $totalNifiNum = $totalNifiNum + $msg'order5'nifiNum;
+        $roundInfo'sequence = $roundInfo'sequence + 1;
+        $toOrderNumber = $msg'order5'orderNumber;
+    }
+    if (($msg'order6'nifiNum > 0)) {
+        throw_unless(24491, null?($BuyInfo$_load_opt(__tact_dict_get_uint_cell($roundInfo'orders, 32, $msg'order6'orderNumber))));
+        $roundInfo'orders~__tact_dict_set_uint_cell(32, $msg'order6'orderNumber, $BuyInfo$_store_cell($BuyInfo$_constructor_startLuckyNum_nifiNum($msg'order6'startLuckyNum, $msg'order6'nifiNum)));
+        $totalNifiNum = $totalNifiNum + $msg'order6'nifiNum;
+        $roundInfo'sequence = $roundInfo'sequence + 1;
+        $toOrderNumber = $msg'order6'orderNumber;
+    }
+    if (($msg'order7'nifiNum > 0)) {
+        throw_unless(24491, null?($BuyInfo$_load_opt(__tact_dict_get_uint_cell($roundInfo'orders, 32, $msg'order7'orderNumber))));
+        $roundInfo'orders~__tact_dict_set_uint_cell(32, $msg'order7'orderNumber, $BuyInfo$_store_cell($BuyInfo$_constructor_startLuckyNum_nifiNum($msg'order7'startLuckyNum, $msg'order7'nifiNum)));
+        $totalNifiNum = $totalNifiNum + $msg'order7'nifiNum;
+        $roundInfo'sequence = $roundInfo'sequence + 1;
+        $toOrderNumber = $msg'order7'orderNumber;
+    }
+    if (($msg'order8'nifiNum > 0)) {
+        throw_unless(24491, null?($BuyInfo$_load_opt(__tact_dict_get_uint_cell($roundInfo'orders, 32, $msg'order8'orderNumber))));
+        $roundInfo'orders~__tact_dict_set_uint_cell(32, $msg'order8'orderNumber, $BuyInfo$_store_cell($BuyInfo$_constructor_startLuckyNum_nifiNum($msg'order8'startLuckyNum, $msg'order8'nifiNum)));
+        $totalNifiNum = $totalNifiNum + $msg'order8'nifiNum;
+        $roundInfo'sequence = $roundInfo'sequence + 1;
+        $toOrderNumber = $msg'order8'orderNumber;
+    }
+    if (($msg'order9'nifiNum > 0)) {
+        throw_unless(24491, null?($BuyInfo$_load_opt(__tact_dict_get_uint_cell($roundInfo'orders, 32, $msg'order9'orderNumber))));
+        $roundInfo'orders~__tact_dict_set_uint_cell(32, $msg'order9'orderNumber, $BuyInfo$_store_cell($BuyInfo$_constructor_startLuckyNum_nifiNum($msg'order9'startLuckyNum, $msg'order9'nifiNum)));
+        $totalNifiNum = $totalNifiNum + $msg'order9'nifiNum;
+        $roundInfo'sequence = $roundInfo'sequence + 1;
+        $toOrderNumber = $msg'order9'orderNumber;
+    }
+    if (($msg'order10'nifiNum > 0)) {
+        throw_unless(24491, null?($BuyInfo$_load_opt(__tact_dict_get_uint_cell($roundInfo'orders, 32, $msg'order10'orderNumber))));
+        $roundInfo'orders~__tact_dict_set_uint_cell(32, $msg'order10'orderNumber, $BuyInfo$_store_cell($BuyInfo$_constructor_startLuckyNum_nifiNum($msg'order10'startLuckyNum, $msg'order10'nifiNum)));
+        $totalNifiNum = $totalNifiNum + $msg'order10'nifiNum;
+        $roundInfo'sequence = $roundInfo'sequence + 1;
+        $toOrderNumber = $msg'order10'orderNumber;
+    }
+    if (($msg'order11'nifiNum > 0)) {
+        throw_unless(24491, null?($BuyInfo$_load_opt(__tact_dict_get_uint_cell($roundInfo'orders, 32, $msg'order11'orderNumber))));
+        $roundInfo'orders~__tact_dict_set_uint_cell(32, $msg'order11'orderNumber, $BuyInfo$_store_cell($BuyInfo$_constructor_startLuckyNum_nifiNum($msg'order11'startLuckyNum, $msg'order11'nifiNum)));
+        $totalNifiNum = $totalNifiNum + $msg'order11'nifiNum;
+        $roundInfo'sequence = $roundInfo'sequence + 1;
+        $toOrderNumber = $msg'order11'orderNumber;
+    }
+    if (($msg'order12'nifiNum > 0)) {
+        throw_unless(24491, null?($BuyInfo$_load_opt(__tact_dict_get_uint_cell($roundInfo'orders, 32, $msg'order12'orderNumber))));
+        $roundInfo'orders~__tact_dict_set_uint_cell(32, $msg'order12'orderNumber, $BuyInfo$_store_cell($BuyInfo$_constructor_startLuckyNum_nifiNum($msg'order12'startLuckyNum, $msg'order12'nifiNum)));
+        $totalNifiNum = $totalNifiNum + $msg'order12'nifiNum;
+        $roundInfo'sequence = $roundInfo'sequence + 1;
+        $toOrderNumber = $msg'order12'orderNumber;
+    }
+    if (($msg'order13'nifiNum > 0)) {
+        throw_unless(24491, null?($BuyInfo$_load_opt(__tact_dict_get_uint_cell($roundInfo'orders, 32, $msg'order13'orderNumber))));
+        $roundInfo'orders~__tact_dict_set_uint_cell(32, $msg'order13'orderNumber, $BuyInfo$_store_cell($BuyInfo$_constructor_startLuckyNum_nifiNum($msg'order13'startLuckyNum, $msg'order13'nifiNum)));
+        $totalNifiNum = $totalNifiNum + $msg'order13'nifiNum;
+        $roundInfo'sequence = $roundInfo'sequence + 1;
+        $toOrderNumber = $msg'order13'orderNumber;
+    }
+    if (($msg'order14'nifiNum > 0)) {
+        throw_unless(24491, null?($BuyInfo$_load_opt(__tact_dict_get_uint_cell($roundInfo'orders, 32, $msg'order14'orderNumber))));
+        $roundInfo'orders~__tact_dict_set_uint_cell(32, $msg'order14'orderNumber, $BuyInfo$_store_cell($BuyInfo$_constructor_startLuckyNum_nifiNum($msg'order14'startLuckyNum, $msg'order14'nifiNum)));
+        $totalNifiNum = $totalNifiNum + $msg'order14'nifiNum;
+        $roundInfo'sequence = $roundInfo'sequence + 1;
+        $toOrderNumber = $msg'order14'orderNumber;
+    }
+    $roundInfo'arrLength = $roundInfo'arrLength + $totalNifiNum;
+    throw_unless(29710, ($roundInfo'sum >= $roundInfo'arrLength));
+    if (($roundInfo'sum == $roundInfo'arrLength)) {
+        $roundInfo'finish = true;
+    }
+    $self'rounds~__tact_dict_set_uint_cell(32, $msg'round, $RoundInfo$_store_cell(($roundInfo'orders, $roundInfo'sum, $roundInfo'arrLength, $roundInfo'sequence, $roundInfo'finish, $roundInfo'winner, $roundInfo'awardAmount, $roundInfo'startTime, $roundInfo'endTime)));
+    tuple $reply = __tact_string_builder_append_not_mut(__tact_string_builder_append_not_mut(__tact_string_builder_append_not_mut(__tact_string_builder_append_not_mut(__tact_string_builder_start_comment(), __gen_slice_string_e573187bc1b1a00502af27269b4a4bcfea16a5941cd12b00f8bae4140e511a1d()), __tact_int_to_string($fromOrderNumber)), __gen_slice_string_29acbf4707ebe2eeff93b2d621ce3fef1ff430425718a0464bc4963c2869b639()), __tact_int_to_string($toOrderNumber));
+    ($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)~$SnatchTresasureContract$_fun_reply(__tact_string_builder_end($reply));
+    return (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners), ());
+}
+
+(((cell, slice, int, cell, cell)), ()) $SnatchTresasureContract$_internal_binary_Deploy((cell, slice, int, cell, cell) $self, (int) $deploy) impure inline {
+    var ($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners) = $self;
+    var ($deploy'queryId) = $deploy;
+    ($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)~$SnatchTresasureContract$_fun_notify($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
+    return (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners), ());
+}
+
+(((cell, slice, int, cell, cell)), ()) $SnatchTresasureContract$_internal_binary_ChangeOwner((cell, slice, int, cell, cell) $self, (int, slice) $msg) impure inline {
+    var ($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners) = $self;
+    var ($msg'queryId, $msg'newOwner) = $msg;
+    ($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)~$SnatchTresasureContract$_fun_requireOwner();
+    $self'owner = $msg'newOwner;
+    ($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners)~$SnatchTresasureContract$_fun_reply($ChangeOwnerOk$_store_cell($ChangeOwnerOk$_constructor_queryId_newOwner($msg'queryId, $msg'newOwner)));
+    return (($self'rounds, $self'owner, $self'publicKey, $self'records, $self'winners), ());
+}
+
+;;
+;; Get methods of a Contract SnatchTresasureContract
+;;
+
+_ %getRoundWinner(int $$round) method_id(110950) {
+    int $round = $$round;
+    var self = $SnatchTresasureContract$_contract_load();
+    var res = self~$SnatchTresasureContract$_fun_getRoundWinner($round);
+    return $WinnerInfo$_to_opt_external(res);
+}
+
+_ %getWinnerRecord() method_id(115595) {
+    var self = $SnatchTresasureContract$_contract_load();
+    var res = self~$SnatchTresasureContract$_fun_getWinnerRecord();
+    return res;
+}
+
+_ %getRoundInfoState(int $$key) method_id(125928) {
+    int $key = $$key;
+    var self = $SnatchTresasureContract$_contract_load();
+    var res = self~$SnatchTresasureContract$_fun_getRoundInfoState($key);
+    return $RoundInfo$_to_opt_external(res);
+}
+
+_ %getPrizeTxId(int $$round) method_id(109029) {
+    int $round = $$round;
+    var self = $SnatchTresasureContract$_contract_load();
+    var res = self~$SnatchTresasureContract$_fun_getPrizeTxId($round);
+    return res;
+}
+
+_ %getPrizeRecord() method_id(85921) {
+    var self = $SnatchTresasureContract$_contract_load();
+    var res = self~$SnatchTresasureContract$_fun_getPrizeRecord();
+    return res;
+}
+
+_ %getOrderExist(int $$round, int $$order) method_id(112365) {
+    int $round = $$round;
+    int $order = $$order;
+    var self = $SnatchTresasureContract$_contract_load();
+    var res = self~$SnatchTresasureContract$_fun_getOrderExist($round, $order);
+    return res;
+}
+
+_ %getBuyInfo(int $$round, int $$orderNumber) method_id(84041) {
+    int $round = $$round;
+    int $orderNumber = $$orderNumber;
+    var self = $SnatchTresasureContract$_contract_load();
+    var res = self~$SnatchTresasureContract$_fun_getBuyInfo($round, $orderNumber);
+    return $BuyInfo$_to_opt_external(res);
+}
+
+_ %verifySignature(int $$round, int $$nifiAmount, int $$orderNumber, cell $$signature, slice $$addr) method_id(90261) {
+    int $round = $$round;
+    int $nifiAmount = $$nifiAmount;
+    int $orderNumber = $$orderNumber;
+    cell $signature = $$signature;
+    slice $addr = __tact_verify_address($$addr);
+    var self = $SnatchTresasureContract$_contract_load();
+    var res = self~$SnatchTresasureContract$_fun_verifySignature($round, $nifiAmount, $orderNumber, $signature, $addr);
+    return res;
+}
+
+_ %getPubkey() method_id(82731) {
+    var self = $SnatchTresasureContract$_contract_load();
+    var res = self~$SnatchTresasureContract$_fun_getPubkey();
+    return res;
+}
+
+_ %owner() method_id(83229) {
+    var self = $SnatchTresasureContract$_contract_load();
+    var res = self~$SnatchTresasureContract$_fun_owner();
+    return res;
+}
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128,
+        "org.ton.debug.v0"H >> 128,
+        "org.ton.chain.workchain.v0"H >> 128,
+        "org.ton.ownable.transferable.v2"H >> 128,
+        "org.ton.ownable"H >> 128
+    );
+}
+
+_ get_abi_ipfs() method_id {
+    return "ipfs://QmbyufZ6tKLmySti4GLipvp83vBVyGKdTPFEQqM2ZWXJbs";
+}
+
+_ lazy_deployment_completed() method_id {
+    return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract SnatchTresasureContract
+;;
+
+((cell, slice, int, cell, cell), int) $SnatchTresasureContract$_contract_router_internal((cell, slice, int, cell, cell) self, int msg_bounced, slice in_msg) impure inline_ref {
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    
+    ;; Receive NewRoundMsg message
+    if (op == 3812653086) {
+        var msg = in_msg~$NewRoundMsg$_load();
+        self~$SnatchTresasureContract$_internal_binary_NewRoundMsg(msg);
+        return (self, true);
+    }
+    
+    ;; Receive CloseRoundMsg message
+    if (op == 1611649584) {
+        var msg = in_msg~$CloseRoundMsg$_load();
+        self~$SnatchTresasureContract$_internal_binary_CloseRoundMsg(msg);
+        return (self, true);
+    }
+    
+    ;; Receive BuyMsg message
+    if (op == 1852967072) {
+        var msg = in_msg~$BuyMsg$_load();
+        self~$SnatchTresasureContract$_internal_binary_BuyMsg(msg);
+        return (self, true);
+    }
+    
+    ;; Receive DrawMsg message
+    if (op == 35408776) {
+        var msg = in_msg~$DrawMsg$_load();
+        self~$SnatchTresasureContract$_internal_binary_DrawMsg(msg);
+        return (self, true);
+    }
+    
+    ;; Receive PrizeMsg message
+    if (op == 2789971257) {
+        var msg = in_msg~$PrizeMsg$_load();
+        self~$SnatchTresasureContract$_internal_binary_PrizeMsg(msg);
+        return (self, true);
+    }
+    
+    ;; Receive CleanMsg message
+    if (op == 3654798792) {
+        var msg = in_msg~$CleanMsg$_load();
+        self~$SnatchTresasureContract$_internal_binary_CleanMsg(msg);
+        return (self, true);
+    }
+    
+    ;; Receive BatchSyncOrderMsg message
+    if (op == 3479255444) {
+        var msg = in_msg~$BatchSyncOrderMsg$_load();
+        self~$SnatchTresasureContract$_internal_binary_BatchSyncOrderMsg(msg);
+        return (self, true);
+    }
+    
+    ;; Receive Deploy message
+    if (op == 2490013878) {
+        var msg = in_msg~$Deploy$_load();
+        self~$SnatchTresasureContract$_internal_binary_Deploy(msg);
+        return (self, true);
+    }
+    
+    ;; Receive ChangeOwner message
+    if (op == 2174598809) {
+        var msg = in_msg~$ChangeOwner$_load();
+        self~$SnatchTresasureContract$_internal_binary_ChangeOwner(msg);
+        return (self, true);
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = -(msg_flags & 1);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $SnatchTresasureContract$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$SnatchTresasureContract$_contract_router_internal(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(130, handled);
+    
+    ;; Persist state
+    $SnatchTresasureContract$_contract_store(self);
+}

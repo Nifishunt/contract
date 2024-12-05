@@ -1,0 +1,298 @@
+;;
+;; Header files for SnatchTresasureContract
+;; NOTE: declarations are sorted for optimal order
+;;
+
+;; __tact_verify_address
+slice __tact_verify_address(slice address) inline;
+
+;; __tact_load_address
+(slice, slice) __tact_load_address(slice cs) inline;
+
+;; __tact_store_address
+builder __tact_store_address(builder b, slice address) inline;
+
+;; __tact_my_balance
+int __tact_my_balance() inline;
+
+;; __tact_not_null
+forall X -> X __tact_not_null(X x) inline;
+
+;; __tact_context_get
+(int, slice, int, slice) __tact_context_get() inline;
+
+;; __tact_context_get_sender
+slice __tact_context_get_sender() inline;
+
+;; __tact_prepare_random
+() __tact_prepare_random() impure inline;
+
+;; __tact_store_bool
+builder __tact_store_bool(builder b, int v) inline;
+
+;; __tact_dict_set_uint_uint
+(cell, ()) __tact_dict_set_uint_uint(cell d, int kl, int k, int v, int vl) inline;
+
+;; __tact_dict_get_uint_uint
+int __tact_dict_get_uint_uint(cell d, int kl, int k, int vl) inline;
+
+;; __tact_dict_set_uint_cell
+(cell, ()) __tact_dict_set_uint_cell(cell d, int kl, int k, cell v) inline;
+
+;; __tact_dict_get_uint_cell
+cell __tact_dict_get_uint_cell(cell d, int kl, int k) inline;
+
+;; __tact_dict_min_uint_cell
+(int, cell, int) __tact_dict_min_uint_cell(cell d, int kl) inline;
+
+;; __tact_dict_next_uint_cell
+(int, cell, int) __tact_dict_next_uint_cell(cell d, int kl, int pivot) inline;
+
+;; __tact_slice_eq_bits
+int __tact_slice_eq_bits(slice a, slice b) inline;
+
+;; __tact_string_builder_start
+tuple __tact_string_builder_start(builder b) inline;
+
+;; __tact_string_builder_start_comment
+tuple __tact_string_builder_start_comment() inline;
+
+;; __tact_string_builder_end
+cell __tact_string_builder_end(tuple builders) inline;
+
+;; __tact_string_builder_append
+((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref;
+
+;; __tact_string_builder_append_not_mut
+(tuple) __tact_string_builder_append_not_mut(tuple builders, slice sc) inline_ref;
+
+;; __tact_int_to_string
+slice __tact_int_to_string(int src) inline_ref;
+
+;; $Deploy$_load
+(slice, ((int))) $Deploy$_load(slice sc_0) inline;
+
+;; $DeployOk$_store
+builder $DeployOk$_store(builder build_0, (int) v) inline;
+
+;; $DeployOk$_store_cell
+cell $DeployOk$_store_cell((int) v) inline;
+
+;; $ChangeOwner$_load
+(slice, ((int, slice))) $ChangeOwner$_load(slice sc_0) inline;
+
+;; $ChangeOwnerOk$_store
+builder $ChangeOwnerOk$_store(builder build_0, (int, slice) v) inline;
+
+;; $ChangeOwnerOk$_store_cell
+cell $ChangeOwnerOk$_store_cell((int, slice) v) inline;
+
+;; $RoundInfo$_store
+builder $RoundInfo$_store(builder build_0, (cell, int, int, int, int, int, int, int, int) v) inline_ref;
+
+;; $RoundInfo$_store_cell
+cell $RoundInfo$_store_cell((cell, int, int, int, int, int, int, int, int) v) inline;
+
+;; $RoundInfo$_load
+(slice, ((cell, int, int, int, int, int, int, int, int))) $RoundInfo$_load(slice sc_0) inline_ref;
+
+;; $RoundInfo$_as_optional
+tuple $RoundInfo$_as_optional((cell, int, int, int, int, int, int, int, int) v) inline;
+
+;; $RoundInfo$_load_opt
+tuple $RoundInfo$_load_opt(cell cl) inline;
+
+;; $BuyInfo$_store
+builder $BuyInfo$_store(builder build_0, (int, int) v) inline;
+
+;; $BuyInfo$_store_cell
+cell $BuyInfo$_store_cell((int, int) v) inline;
+
+;; $BuyInfo$_load
+(slice, ((int, int))) $BuyInfo$_load(slice sc_0) inline;
+
+;; $BuyInfo$_as_optional
+tuple $BuyInfo$_as_optional((int, int) v) inline;
+
+;; $BuyInfo$_load_opt
+tuple $BuyInfo$_load_opt(cell cl) inline;
+
+;; $SignData$_store
+builder $SignData$_store(builder build_0, (int, int, int, slice) v) inline;
+
+;; $SignData$_store_cell
+cell $SignData$_store_cell((int, int, int, slice) v) inline;
+
+;; $NewRoundMsg$_load
+(slice, ((int, int, int, int, int))) $NewRoundMsg$_load(slice sc_0) inline;
+
+;; $CloseRoundMsg$_load
+(slice, ((int))) $CloseRoundMsg$_load(slice sc_0) inline;
+
+;; $BuyMsg$_load
+(slice, ((int, int, int, cell))) $BuyMsg$_load(slice sc_0) inline;
+
+;; $BuyEvent$_store
+builder $BuyEvent$_store(builder build_0, (int, int, int, int) v) inline;
+
+;; $BuyEvent$_store_cell
+cell $BuyEvent$_store_cell((int, int, int, int) v) inline;
+
+;; $DrawMsg$_load
+(slice, ((int))) $DrawMsg$_load(slice sc_0) inline;
+
+;; $CleanMsg$_load
+(slice, ((int))) $CleanMsg$_load(slice sc_0) inline;
+
+;; $PrizeMsg$_load
+(slice, ((int, int))) $PrizeMsg$_load(slice sc_0) inline;
+
+;; $OrderInfo$_load
+(slice, ((int, int, int))) $OrderInfo$_load(slice sc_0) inline;
+
+;; $BatchSyncOrderMsg$_load
+(slice, ((int, (int, int, int), (int, int, int), (int, int, int), (int, int, int), (int, int, int), (int, int, int), (int, int, int), (int, int, int), (int, int, int), (int, int, int), (int, int, int), (int, int, int), (int, int, int), (int, int, int)))) $BatchSyncOrderMsg$_load(slice sc_0) inline_ref;
+
+;; $SnatchTresasureContract$_store
+builder $SnatchTresasureContract$_store(builder build_0, (cell, slice, int, cell, cell) v) inline;
+
+;; $SnatchTresasureContract$_load
+(slice, ((cell, slice, int, cell, cell))) $SnatchTresasureContract$_load(slice sc_0) inline;
+
+;; $StateInit$_not_null
+((cell, cell)) $StateInit$_not_null(tuple v) inline;
+
+;; $RoundInfo$_not_null
+((cell, int, int, int, int, int, int, int, int)) $RoundInfo$_not_null(tuple v) inline;
+
+;; $RoundInfo$_to_tuple
+tuple $RoundInfo$_to_tuple(((cell, int, int, int, int, int, int, int, int)) v) inline;
+
+;; $RoundInfo$_to_opt_tuple
+tuple $RoundInfo$_to_opt_tuple(tuple v) inline;
+
+;; $RoundInfo$_to_opt_external
+tuple $RoundInfo$_to_opt_external(tuple v) inline;
+
+;; $BuyInfo$_not_null
+((int, int)) $BuyInfo$_not_null(tuple v) inline;
+
+;; $BuyInfo$_to_tuple
+tuple $BuyInfo$_to_tuple(((int, int)) v) inline;
+
+;; $BuyInfo$_to_opt_tuple
+tuple $BuyInfo$_to_opt_tuple(tuple v) inline;
+
+;; $BuyInfo$_to_opt_external
+tuple $BuyInfo$_to_opt_external(tuple v) inline;
+
+;; $WinnerInfo$_not_null
+((int)) $WinnerInfo$_not_null(tuple v) inline;
+
+;; $WinnerInfo$_as_optional
+tuple $WinnerInfo$_as_optional((int) v) inline;
+
+;; $WinnerInfo$_to_tuple
+tuple $WinnerInfo$_to_tuple(((int)) v) inline;
+
+;; $WinnerInfo$_to_opt_tuple
+tuple $WinnerInfo$_to_opt_tuple(tuple v) inline;
+
+;; $WinnerInfo$_to_opt_external
+tuple $WinnerInfo$_to_opt_external(tuple v) inline;
+
+;; $SnatchTresasureContract$init$_load
+(slice, ((slice, slice, slice))) $SnatchTresasureContract$init$_load(slice sc_0) inline;
+
+;; $SnatchTresasureContract$_contract_init
+(cell, slice, int, cell, cell) $SnatchTresasureContract$_contract_init(slice $owner, slice $pub, slice $msg) impure inline_ref;
+
+;; $SnatchTresasureContract$_contract_load
+(cell, slice, int, cell, cell) $SnatchTresasureContract$_contract_load() impure inline_ref;
+
+;; $SnatchTresasureContract$_contract_store
+() $SnatchTresasureContract$_contract_store((cell, slice, int, cell, cell) v) impure inline;
+
+;; $global_random
+int $global_random(int $min, int $max) impure inline;
+
+;; $global_send
+() $global_send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref;
+
+;; $Cell$_fun_asSlice
+slice $Cell$_fun_asSlice(cell $self) impure inline;
+
+;; $SignData$_constructor_round_nifiAmount_orderNumber_address
+((int, int, int, slice)) $SignData$_constructor_round_nifiAmount_orderNumber_address(int round, int nifiAmount, int orderNumber, slice address) inline;
+
+;; $SnatchTresasureContract$_fun_getSignData
+((cell, slice, int, cell, cell), cell) $SnatchTresasureContract$_fun_getSignData((cell, slice, int, cell, cell) $self, (int, int, int, cell) $msg, slice $addr) impure inline_ref;
+
+;; $WinnerInfo$_constructor_luckyNum
+((int)) $WinnerInfo$_constructor_luckyNum(int luckyNum) inline;
+
+;; $SnatchTresasureContract$_fun_getRoundWinner
+((cell, slice, int, cell, cell), tuple) $SnatchTresasureContract$_fun_getRoundWinner((cell, slice, int, cell, cell) $self, int $round) impure inline_ref;
+
+;; $SnatchTresasureContract$_fun_getWinnerRecord
+((cell, slice, int, cell, cell), cell) $SnatchTresasureContract$_fun_getWinnerRecord((cell, slice, int, cell, cell) $self) impure inline_ref;
+
+;; $SnatchTresasureContract$_fun_getRoundInfoState
+((cell, slice, int, cell, cell), tuple) $SnatchTresasureContract$_fun_getRoundInfoState((cell, slice, int, cell, cell) $self, int $key) impure inline_ref;
+
+;; $SnatchTresasureContract$_fun_getPrizeTxId
+((cell, slice, int, cell, cell), int) $SnatchTresasureContract$_fun_getPrizeTxId((cell, slice, int, cell, cell) $self, int $round) impure inline_ref;
+
+;; $SnatchTresasureContract$_fun_getPrizeRecord
+((cell, slice, int, cell, cell), cell) $SnatchTresasureContract$_fun_getPrizeRecord((cell, slice, int, cell, cell) $self) impure inline_ref;
+
+;; $SnatchTresasureContract$_fun_getOrderExist
+((cell, slice, int, cell, cell), int) $SnatchTresasureContract$_fun_getOrderExist((cell, slice, int, cell, cell) $self, int $round, int $order) impure inline_ref;
+
+;; $SnatchTresasureContract$_fun_getBuyInfo
+((cell, slice, int, cell, cell), tuple) $SnatchTresasureContract$_fun_getBuyInfo((cell, slice, int, cell, cell) $self, int $round, int $orderNumber) impure inline_ref;
+
+;; $BuyMsg$_constructor_round_nifiAmount_orderNumber_signature
+((int, int, int, cell)) $BuyMsg$_constructor_round_nifiAmount_orderNumber_signature(int round, int nifiAmount, int orderNumber, cell signature) inline;
+
+;; $SnatchTresasureContract$_fun_verifySignature
+((cell, slice, int, cell, cell), int) $SnatchTresasureContract$_fun_verifySignature((cell, slice, int, cell, cell) $self, int $round, int $nifiAmount, int $orderNumber, cell $signature, slice $addr) impure inline_ref;
+
+;; $SnatchTresasureContract$_fun_getPubkey
+((cell, slice, int, cell, cell), int) $SnatchTresasureContract$_fun_getPubkey((cell, slice, int, cell, cell) $self) impure inline_ref;
+
+;; $SendParameters$_constructor_bounce_to_value_mode_body_code_data
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body_code_data(int bounce, slice to, int value, int mode, cell body, cell code, cell data) inline;
+
+;; $SnatchTresasureContract$_fun_forward
+((cell, slice, int, cell, cell), ()) $SnatchTresasureContract$_fun_forward((cell, slice, int, cell, cell) $self, slice $to, cell $body, int $bounce, tuple $init) impure inline_ref;
+
+;; $SnatchTresasureContract$_fun_reply
+((cell, slice, int, cell, cell), ()) $SnatchTresasureContract$_fun_reply((cell, slice, int, cell, cell) $self, cell $body) impure inline;
+
+;; $SnatchTresasureContract$_fun_notify
+((cell, slice, int, cell, cell), ()) $SnatchTresasureContract$_fun_notify((cell, slice, int, cell, cell) $self, cell $body) impure inline;
+
+;; $SnatchTresasureContract$_fun_requireOwner
+((cell, slice, int, cell, cell), ()) $SnatchTresasureContract$_fun_requireOwner((cell, slice, int, cell, cell) $self) impure inline_ref;
+
+;; $SnatchTresasureContract$_fun_owner
+((cell, slice, int, cell, cell), slice) $SnatchTresasureContract$_fun_owner((cell, slice, int, cell, cell) $self) impure inline_ref;
+
+;; $RoundInfo$_constructor_orders_sum_arrLength_finish_sequence_winner_awardAmount_startTime_endTime
+((cell, int, int, int, int, int, int, int, int)) $RoundInfo$_constructor_orders_sum_arrLength_finish_sequence_winner_awardAmount_startTime_endTime(cell orders, int sum, int arrLength, int finish, int sequence, int winner, int awardAmount, int startTime, int endTime) inline;
+
+;; $BuyInfo$_constructor_startLuckyNum_nifiNum
+((int, int)) $BuyInfo$_constructor_startLuckyNum_nifiNum(int startLuckyNum, int nifiNum) inline;
+
+;; $BuyEvent$_constructor_round_amount_orderNumber_luckyNumberIndex
+((int, int, int, int)) $BuyEvent$_constructor_round_amount_orderNumber_luckyNumberIndex(int round, int amount, int orderNumber, int luckyNumberIndex) inline;
+
+;; $SendParameters$_constructor_to_value_mode_bounce_body
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_bounce_body(slice to, int value, int mode, int bounce, cell body) inline;
+
+;; $DeployOk$_constructor_queryId
+((int)) $DeployOk$_constructor_queryId(int queryId) inline;
+
+;; $ChangeOwnerOk$_constructor_queryId_newOwner
+((int, slice)) $ChangeOwnerOk$_constructor_queryId_newOwner(int queryId, slice newOwner) inline;
